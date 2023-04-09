@@ -3,40 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace Script
 {
     public class MiniGameLoader : MonoBehaviour
     {
+        [SerializeField] private int loadBatchSize;
         public List<String> sceneNameList;
-        private List<AsyncOperation> _loadedScenes = new List<AsyncOperation>();
+        private List<(string sceneName,AsyncOperation asyncOperation)> _loadedScenes = new();
 
         private Scene _activeScene;
 
-        private void Start()
+        public IEnumerator LoadScenes()
         {
-            StartCoroutine("LoadScenes");
-        }
-
-        private IEnumerator LoadScenes()
-        {
-            foreach (var sceneName in sceneNameList)
+            var loadScenesNames = new string[loadBatchSize];
+            for (var i = 0; i < loadBatchSize; i++)
             {
-                var loadedScene = SceneManager.LoadSceneAsync("Scenes/" + sceneName, LoadSceneMode.Additive);
+                var randomSceneName = sceneNameList[Random.Range(0, sceneNameList.Count)];
+                sceneNameList.Remove(randomSceneName);
+                var loadedScene = SceneManager.LoadSceneAsync("Scenes/" + randomSceneName, LoadSceneMode.Additive);
                 loadedScene.allowSceneActivation = false;
-                _loadedScenes.Add(loadedScene);
+                _loadedScenes.Add((randomSceneName, loadedScene));
             }
-
+            
+            // ロード待ち処理
             var flg = true;
             while (flg)
             {
-                foreach (var asyncLoad in _loadedScenes)
+                foreach (var scene in _loadedScenes)
                 {
-                    if (asyncLoad.progress < 0.9f) yield return null;
+                    if (scene.asyncOperation.progress < 0.9f) yield return null;
                     flg = false;
                 }
             }
-            
             Debug.Log("LoadComplete!");
         }
 
@@ -52,7 +52,7 @@ namespace Script
             Debug.Log(!_activeScene.isLoaded);
             
             _activeScene = SceneManager.GetSceneByName(sceneNameList[0]);
-            _loadedScenes[0].allowSceneActivation = true;
+            _loadedScenes[0].asyncOperation.allowSceneActivation = true;
         }
     }
 }
