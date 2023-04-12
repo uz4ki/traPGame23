@@ -70,7 +70,7 @@ namespace MiniGames.Hinaruhi.Renda
                 // ちなみにGameOver()という関数を呼ぶと、ゲームを失敗したことにできる。
                 Clear();
                 
-                // 「クリア」というテキストをはじめ非表示にしておく
+                // 「クリア」というテキストを表示状態にする
                 // clearCanvasGroup.alphaに0～1を入れることでどのくらいの濃さで表示するか変更できる
                 // つまりclearCanvasGroup.alpha = 1f; と書くと完全に表示状態にできる。
                 clearCanvasGroup.alpha = 1f;
