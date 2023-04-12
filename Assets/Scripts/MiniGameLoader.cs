@@ -15,6 +15,11 @@ namespace Script
 
         private Scene _activeScene;
 
+        public void StartLoading()
+        {
+            StartCoroutine("LoadScenes");
+        }
+
         public IEnumerator LoadScenes()
         {
             var loadScenesNames = new string[loadBatchSize];
@@ -25,6 +30,7 @@ namespace Script
                 var loadedScene = SceneManager.LoadSceneAsync("Scenes/" + randomSceneName, LoadSceneMode.Additive);
                 loadedScene.allowSceneActivation = false;
                 _loadedScenes.Add((randomSceneName, loadedScene));
+                Debug.Log(_loadedScenes[0]);
             }
             
             // ロード待ち処理
@@ -51,7 +57,7 @@ namespace Script
         {
             Debug.Log(!_activeScene.isLoaded);
             
-            _activeScene = SceneManager.GetSceneByName(sceneNameList[0]);
+            _activeScene = SceneManager.GetSceneByName(_loadedScenes[0].sceneName);
             _loadedScenes[0].asyncOperation.allowSceneActivation = true;
         }
     }
