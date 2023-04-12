@@ -49,7 +49,7 @@ namespace Script
         public void UnloadScene()
         {
             SceneManager.UnloadSceneAsync(_activeScene.name);
-            sceneNameList.RemoveAt(0);
+         //   sceneNameList.RemoveAt(0);
             _loadedScenes.RemoveAt(0);
         }
         
