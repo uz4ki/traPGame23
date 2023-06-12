@@ -12,25 +12,9 @@ namespace Script
         private void OnEnable()
         {
             StartCoroutine("GameTimer");
-            Initialization();
         }
 
-        protected virtual void Initialization()
-        {
-            isCleared = false;
-        }
-
-        public virtual void Clear()
-        {
-            isCleared = true;
-        }
-        
-        public virtual void GameOver()
-        {
-            isCleared = false;
-        }
-        
-        protected virtual void EndGame()
+        private void EndGame()
         {
             if (isCleared) GameManager.ClearMiniGame();
             else GameManager.FailMiniGame();
