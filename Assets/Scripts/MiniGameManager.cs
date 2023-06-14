@@ -7,14 +7,14 @@ namespace Script
 {
     public class MiniGameManager : MonoBehaviour
     {
-        [SerializeField] private float limitTime;
+        private const float LimitTime = 5f;
         public bool isCleared;
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             StartCoroutine("GameTimer");
         }
 
-        private void EndGame()
+        private void SendGameResult()
         {
             if (isCleared) GameManager.ClearMiniGame();
             else GameManager.FailMiniGame();
@@ -22,8 +22,8 @@ namespace Script
 
         private IEnumerator GameTimer()
         {
-            yield return new WaitForSeconds(limitTime);
-            EndGame();
+            yield return new WaitForSeconds(LimitTime);
+            SendGameResult();
         }
     }
 }

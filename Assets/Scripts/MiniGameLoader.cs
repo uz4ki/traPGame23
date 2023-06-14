@@ -27,10 +27,9 @@ namespace Script
             {
                 var randomSceneName = sceneNameList[Random.Range(0, sceneNameList.Count)];
                 sceneNameList.Remove(randomSceneName);
-                var loadedScene = SceneManager.LoadSceneAsync("Scenes/" + randomSceneName, LoadSceneMode.Additive);
+                var loadedScene = SceneManager.LoadSceneAsync("Games/" + randomSceneName, LoadSceneMode.Additive);
                 loadedScene.allowSceneActivation = false;
                 _loadedScenes.Add((randomSceneName, loadedScene));
-                Debug.Log(_loadedScenes[0]);
             }
             
             // ロード待ち処理
@@ -48,15 +47,13 @@ namespace Script
 
         public void UnloadScene()
         {
-            SceneManager.UnloadSceneAsync(_activeScene.name);
-            sceneNameList.RemoveAt(0);
+            sceneNameList.Add(_activeScene.name);
+            SceneManager.UnloadScene(_activeScene);
             _loadedScenes.RemoveAt(0);
         }
         
         public void StartScene()
         {
-            Debug.Log(!_activeScene.isLoaded);
-            
             _activeScene = SceneManager.GetSceneByName(_loadedScenes[0].sceneName);
             _loadedScenes[0].asyncOperation.allowSceneActivation = true;
         }

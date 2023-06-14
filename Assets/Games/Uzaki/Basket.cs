@@ -1,18 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Script;
 using UnityEngine;
 
 public class Basket : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private MiniGameManager miniGameManager;
+    private bool _isFirst;
+    private void OnColliderEnter2D(Collider2D col)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (!_isFirst) return;
+        miniGameManager.isCleared = true;
     }
 }
