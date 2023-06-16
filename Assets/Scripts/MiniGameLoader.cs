@@ -9,9 +9,8 @@ namespace Script
 {
     public class MiniGameLoader : MonoBehaviour
     {
-        [SerializeField] private int loadBatchSize;
         public List<String> sceneNameList;
-        private List<(string sceneName,AsyncOperation asyncOperation)> _loadedScenes = new();
+        public List<(string sceneName,AsyncOperation asyncOperation)> loadedScenes = new();
 
         private Scene _activeScene;
 
@@ -20,7 +19,7 @@ namespace Script
             StartCoroutine("LoadScenes");
         }
 
-        public IEnumerator LoadScenes()
+        public IEnumerator LoadScenes(int loadBatchSize = 5)
         {
             var loadScenesNames = new string[loadBatchSize];
             for (var i = 0; i < loadBatchSize; i++)
@@ -29,14 +28,14 @@ namespace Script
                 sceneNameList.Remove(randomSceneName);
                 var loadedScene = SceneManager.LoadSceneAsync("Games/" + randomSceneName, LoadSceneMode.Additive);
                 loadedScene.allowSceneActivation = false;
-                _loadedScenes.Add((randomSceneName, loadedScene));
+                loadedScenes.Add((randomSceneName, loadedScene));
             }
             
             // ロード待ち処理
             var flg = true;
             while (flg)
             {
-                foreach (var scene in _loadedScenes)
+                foreach (var scene in loadedScenes)
                 {
                     if (scene.asyncOperation.progress < 0.9f) yield return null;
                     flg = false;
@@ -49,13 +48,13 @@ namespace Script
         {
             sceneNameList.Add(_activeScene.name);
             SceneManager.UnloadScene(_activeScene);
-            _loadedScenes.RemoveAt(0);
+            loadedScenes.RemoveAt(0);
         }
         
         public void StartScene()
         {
-            _activeScene = SceneManager.GetSceneByName(_loadedScenes[0].sceneName);
-            _loadedScenes[0].asyncOperation.allowSceneActivation = true;
+            _activeScene = SceneManager.GetSceneByName(loadedScenes[0].sceneName);
+            loadedScenes[0].asyncOperation.allowSceneActivation = true;
         }
     }
 }

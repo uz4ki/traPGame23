@@ -4,27 +4,31 @@ using System.Collections.Generic;
 using Script.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Script
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : SingletonMonoBehaviour<GameManager>
     {
-        [SerializeField] private MiniGameLoader _miniGameLoader;
+        [SerializeField] private MiniGameLoader miniGameLoader;
         
-        private static int _score;
-        private static int _life;
+        public int score;
+        public int life;
 
-        private static bool _isFinishedAtThisFrame;
+        private bool _isFinishedAtThisFrame;
+        private bool _isClearedMiniGame;
 
         public List<String> gameList;
 
         private IEnumerator Flow()
         {
             // スタート時の演出
-            
-            while (_life > 0)
+            StartCoroutine(miniGameLoader.LoadScenes(5));
+
+            while (life > 0)
             {
                 yield return PlayMiniGameCoroutine();
+                if (miniGameLoader.loadedScenes.Count < 3) StartCoroutine(miniGameLoader.LoadScenes(3));
             }
             
             // ゲームオーバー
@@ -32,7 +36,7 @@ namespace Script
 
         private IEnumerator PlayMiniGameCoroutine()
         {
-            _miniGameLoader.StartScene();
+            miniGameLoader.StartScene();
             
             // ブリッジシーン遷移
 
@@ -45,23 +49,23 @@ namespace Script
             
             // ブリッジシーン遷移
             
-            _miniGameLoader.UnloadScene();
+            miniGameLoader.UnloadScene();
             
             // ライフ処理
         }
 
-        public static void ClearMiniGame()
+        public void SendMiniGameResult(bool isCleared)
         {
-            _score++;
+            _isClearedMiniGame = isCleared;
+            if (_isClearedMiniGame)
+            {
+                score++;
+            }
+            else
+            {
+                life--;
+            }
             _isFinishedAtThisFrame = true;
         }
-        
-        public static void FailMiniGame()
-        {
-            _life--;
-            _isFinishedAtThisFrame = true;
-        }
-
-
     }
 }

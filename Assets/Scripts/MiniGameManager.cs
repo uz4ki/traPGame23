@@ -11,13 +11,12 @@ namespace Script
         public bool isCleared;
         protected virtual void OnEnable()
         {
-            StartCoroutine("GameTimer");
+            StartCoroutine(nameof(GameTimer));
         }
 
         private void SendGameResult()
         {
-            if (isCleared) GameManager.ClearMiniGame();
-            else GameManager.FailMiniGame();
+            GameManager.Instance.SendMiniGameResult(isCleared);
         }
 
         private IEnumerator GameTimer()
