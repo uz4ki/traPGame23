@@ -8,6 +8,7 @@ namespace Games.Uzaki
     {
         [SerializeField] private Rigidbody2D ball;
         [SerializeField] private Transform arrow;
+        [SerializeField] private Transform ballParent;
         [Header("Options")]
         [SerializeField] private float swayAngleLimit;
         [SerializeField] private float swayAngleSpeed;
@@ -35,11 +36,12 @@ namespace Games.Uzaki
                 transform.rotation = Quaternion.Euler(0, 0, _startAngle - swayAngleLimit);
                 swayAngleSpeed *= -1f;
             }
-            transform.Rotate(Vector3.forward * swayAngleSpeed * 0.01f);
+            transform.Rotate(Vector3.forward * swayAngleSpeed * Time.deltaTime);
 
             if (Input.anyKeyDown)
             {
                 var ballObj= Instantiate(ball, transform.position, Quaternion.identity);
+                ballObj.transform.parent = ballParent;
                 ballObj.velocity = transform.up * throwingPower;
             }
         }

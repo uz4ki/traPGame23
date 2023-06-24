@@ -21,6 +21,8 @@ namespace Script
 
         public IEnumerator LoadScenes(int loadBatchSize = 5)
         {
+            Debug.Log("LoadStart");
+
             var loadScenesNames = new string[loadBatchSize];
             for (var i = 0; i < loadBatchSize; i++)
             {
@@ -44,11 +46,12 @@ namespace Script
             Debug.Log("LoadComplete!");
         }
 
-        public void UnloadScene()
+        public IEnumerator UnloadScene()
         {
             sceneNameList.Add(_activeScene.name);
-            SceneManager.UnloadScene(_activeScene);
             loadedScenes.RemoveAt(0);
+            SceneManager.UnloadScene(_activeScene);
+            yield return null;
         }
         
         public void StartScene()

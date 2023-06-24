@@ -11,7 +11,7 @@ namespace Script
         public bool isCleared;
         protected virtual void OnEnable()
         {
-            StartCoroutine(nameof(GameTimer));
+            StartCoroutine(GameTimer());
         }
 
         private void SendGameResult()
@@ -21,8 +21,14 @@ namespace Script
 
         private IEnumerator GameTimer()
         {
-            yield return new WaitForSeconds(LimitTime);
+            var timer = 0f;
+            while (timer < LimitTime)
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
             SendGameResult();
+            yield return null;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Script.Utils;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
@@ -13,12 +14,19 @@ namespace Script
         [SerializeField] private MiniGameLoader miniGameLoader;
         
         public int score;
-        public int life;
+        public int life = 5;
 
         private bool _isFinishedAtThisFrame;
         private bool _isClearedMiniGame;
 
         public List<String> gameList;
+        [SerializeField] private InGameGUIHandler inGameGUIHandler;
+
+
+        public void Start()
+        {
+            StartCoroutine(Flow());
+        }
 
         private IEnumerator Flow()
         {
@@ -28,7 +36,6 @@ namespace Script
             while (life > 0)
             {
                 yield return PlayMiniGameCoroutine();
-                if (miniGameLoader.loadedScenes.Count < 3) StartCoroutine(miniGameLoader.LoadScenes(3));
             }
             
             // ゲームオーバー
@@ -37,9 +44,14 @@ namespace Script
         private IEnumerator PlayMiniGameCoroutine()
         {
             miniGameLoader.StartScene();
-            
-            // ブリッジシーン遷移
+            if (miniGameLoader.loadedScenes.Count < 4)
+            {
+                StartCoroutine(miniGameLoader.LoadScenes(3));
+            }
 
+            // ブリッジシーン遷移
+            inGameGUIHandler.UpShutter();
+            
             while (!_isFinishedAtThisFrame)
             {
                 yield return null;
@@ -48,8 +60,9 @@ namespace Script
             _isFinishedAtThisFrame = false;
             
             // ブリッジシーン遷移
-            
-            miniGameLoader.UnloadScene();
+            inGameGUIHandler.DownShutter();
+
+            StartCoroutine(miniGameLoader.UnloadScene());
             
             // ライフ処理
         }
