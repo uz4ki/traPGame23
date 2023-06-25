@@ -46,12 +46,11 @@ namespace Script
             Debug.Log("LoadComplete!");
         }
 
-        public IEnumerator UnloadScene()
+        public void UnloadScene()
         {
             sceneNameList.Add(_activeScene.name);
             loadedScenes.RemoveAt(0);
             SceneManager.UnloadScene(_activeScene);
-            yield return null;
         }
         
         public void StartScene()

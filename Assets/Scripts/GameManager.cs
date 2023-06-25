@@ -30,8 +30,9 @@ namespace Script
 
         private IEnumerator Flow()
         {
+            yield return miniGameLoader.LoadScenes(5);
             // スタート時の演出
-            StartCoroutine(miniGameLoader.LoadScenes(5));
+            
 
             while (life > 0)
             {
@@ -62,9 +63,12 @@ namespace Script
             // ブリッジシーン遷移
             inGameGUIHandler.DownShutter();
 
-            StartCoroutine(miniGameLoader.UnloadScene());
+            miniGameLoader.UnloadScene();
             
             // ライフ処理
+            yield return new WaitForSeconds(2f);
+
+            yield return null;
         }
 
         public void SendMiniGameResult(bool isCleared)
