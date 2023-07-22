@@ -22,6 +22,8 @@ namespace Script
         public List<String> gameList;
         [SerializeField] private InGameGUIHandler inGameGUIHandler;
 
+        public UnityEvent<bool> OnUpdateGameStatus; 
+
 
         public void Start()
         {
@@ -83,6 +85,7 @@ namespace Script
                 life--;
             }
             _isFinishedAtThisFrame = true;
+            OnUpdateGameStatus.Invoke(_isClearedMiniGame);
         }
     }
 }
